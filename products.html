@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Produits - Ma Boutique</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">MaBoutique</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="#">Nouveautés</a></li>
+                <li><a href="#">Bébé</a></li>
+                <li><a href="#">Fille</a></li>
+                <li><a href="#">Garçon</a></li>
+                <li><a href="#">Chaussures</a></li>
+                <li><a href="#">Jouets</a></li>
+                <li><a href="#">Chambre</a></li>
+                <li><a href="#">Promos</a></li>
+            </ul>
+            <div class="icons">
+                <a href="#" class="icon-user" title="Mon compte">👤</a>
+                <a href="#" class="icon-cart" title="Panier">🛒</a>
+                <button class="burger" id="burger-menu" aria-label="Menu mobile">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section class="products-list">
+            <h1>Nos Produits</h1>
+            <div id="products-container" class="products-grid"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 MaBoutique. Tous droits réservés.</p>
+    </footer>
+    <script src="script.js"></script>
+    <script>
+    // Charger les produits dynamiquement
+    fetch('backend/products.php')
+        .then(res => res.json())
+        .then(products => {
+            const container = document.getElementById('products-container');
+            if (products.length === 0) {
+                container.innerHTML = '<p>Aucun produit disponible.</p>';
+                return;
+            }
+            container.innerHTML = products.map(prod => `
+                <div class="product-card">
+                    <img src="${prod.image || 'https://via.placeholder.com/200x200?text=Produit'}" alt="${prod.name}">
+                    <h2>${prod.name}</h2>
+                    <p class="category">${prod.category || ''}</p>
+                    <p class="price">${prod.price} €</p>
+                    <button class="cta">Voir</button>
+                </div>
+            `).join('');
+        });
+    </script>
+</body>
+</html> 

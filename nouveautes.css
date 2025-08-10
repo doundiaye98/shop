@@ -1,0 +1,9 @@
+@import url('style.css');
+
+body {
+    background: #f0faff;
+}
+.products-list h1 {
+    color: #0ea5e9;
+}
+/* Ajoute ici des styles spécifiques à la page Nouveautés si besoin */ 

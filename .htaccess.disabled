@@ -1,0 +1,27 @@
+# Configuration simplifiée pour WAMP (développement local)
+# Ce fichier sera remplacé par la version complète en production
+
+# Protection contre l'accès direct aux fichiers sensibles
+<Files "*.sql">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Redirection des erreurs (si supporté)
+ErrorDocument 404 /404.php
+ErrorDocument 500 /500.php
+
+# Activation du module rewrite (si disponible)
+# Décommentez les lignes suivantes si mod_rewrite est activé dans WAMP
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     
+#     # Protection basique contre les injections
+#     RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC]
+#     RewriteRule .* - [F]
+# </IfModule> 

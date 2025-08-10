@@ -1,0 +1,9 @@
+@import url('style.css');
+
+body {
+    background: #fff7f0;
+}
+.products-list h1 {
+    color: #e53935;
+}
+/* Ajoute ici des styles spécifiques à la page Promos si besoin */ 
