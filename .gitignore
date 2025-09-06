@@ -43,3 +43,10 @@ tmp/
 # Fichiers de test temporaires
 test_*.php
 *_test.php
+
+# Dependencies
+vendor/
+composer.lock
+
+# Stripe configuration files (contain sensitive data)
+backend/stripe_config.php

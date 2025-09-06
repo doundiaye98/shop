@@ -15,8 +15,8 @@ function requireLogin() {
         // Stocker l'URL actuelle pour rediriger après connexion
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
         
-        // Rediriger vers la page de connexion
-        header('Location: ../login.php');
+        // Rediriger vers la page de connexion (chemin absolu)
+        header('Location: /shop/login.php');
         exit;
     }
 }
@@ -28,8 +28,11 @@ function getCurrentUser() {
     }
     
     try {
-        require_once 'db.php';
-        $stmt = $pdo->prepare('SELECT id, username, email, first_name, last_name FROM users WHERE id = ?');
+        global $pdo;
+        if (!$pdo) {
+            return null;
+        }
+        $stmt = $pdo->prepare('SELECT id, username, email, first_name, last_name, role FROM users WHERE id = ?');
         $stmt->execute([$_SESSION['user_id']]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
@@ -39,7 +42,13 @@ function getCurrentUser() {
 
 // Fonction pour déconnecter l'utilisateur
 function logout() {
+    // Détruire toutes les variables de session
+    $_SESSION = array();
+    
+    // Détruire la session
     session_destroy();
+    
+    // Rediriger vers la page d'accueil
     header('Location: ../index.php');
     exit;
 }

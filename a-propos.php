@@ -1,4 +1,7 @@
-<?php // Page À propos ?>
+<?php
+// Page À propos
+require_once 'backend/db.php';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -28,7 +31,7 @@
         }
         
         .about-header p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
@@ -91,51 +94,6 @@
         .stat-label {
             font-size: 1.1rem;
             opacity: 0.9;
-        }
-        
-        .team-section {
-            padding: 4rem 0;
-            background: white;
-        }
-        
-        .team-card {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 15px;
-            background: #f8f9fa;
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
-        }
-        
-        .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .team-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 3rem;
-            color: white;
-        }
-        
-        .team-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 0.5rem;
-        }
-        
-        .team-role {
-            color: #666;
-            font-size: 1rem;
-            margin-bottom: 1rem;
         }
         
         .values-section {
@@ -292,8 +250,6 @@
                 </div>
             </div>
         </section>
-
-
     </div>
 
     <footer class="text-center py-4 bg-light mt-5">
@@ -302,4 +258,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

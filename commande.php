@@ -1,5 +1,7 @@
 <?php 
 // Page de commande 
+session_start(); // Démarrer la session AVANT tout
+require_once 'backend/db.php';
 require_once 'backend/auth_check.php';
 requireLogin(); // Redirige vers login.php si non connecté
 ?>
@@ -248,6 +250,46 @@ requireLogin(); // Redirige vers login.php si non connecté
                 flex-direction: column;
             }
         }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            color: #dc3545;
+        }
+        
+        .error-message i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .empty-cart i {
+            font-size: 2rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -368,33 +410,14 @@ requireLogin(); // Redirige vers login.php si non connecté
                             </div>
                             
                             <div id="cardDetails" class="payment-details" style="display: none;">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="form-group">
-                                            <label for="cardNumber">Numéro de carte *</label>
-                                            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="cardCVC">CVC *</label>
-                                            <input type="text" id="cardCVC" name="cardCVC" placeholder="123">
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="card-element">Carte bancaire *</label>
+                                    <div id="card-element" class="form-control" style="padding: 12px;"></div>
+                                    <div id="card-errors" class="text-danger mt-2"></div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="cardExpiry">Date d'expiration *</label>
-                                            <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/AA">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="cardName">Nom sur la carte *</label>
-                                            <input type="text" id="cardName" name="cardName">
-                                        </div>
-                                    </div>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Test :</strong> Utilisez 4242 4242 4242 4242 pour un paiement réussi
                                 </div>
                             </div>
                         </div>
@@ -406,28 +429,15 @@ requireLogin(); // Redirige vers login.php si non connecté
                     <div class="order-card">
                         <h3><i class="bi bi-receipt me-2"></i>Résumé de la commande</h3>
                         
-                        <div class="order-summary">
-                            <div class="order-item">
-                                <img src="https://via.placeholder.com/200x200?text=Produit" alt="Produit">
-                                <div class="order-item-details">
-                                    <div class="order-item-name">Body bébé coton bio</div>
-                                    <div class="order-item-price">Quantité: 2</div>
-                                </div>
-                                <div class="order-item-price">39.98 €</div>
-                            </div>
-                            
-                            <div class="order-item">
-                                <img src="https://via.placeholder.com/200x200?text=Jouet" alt="Jouet">
-                                <div class="order-item-details">
-                                    <div class="order-item-name">Jouet d'éveil musical</div>
-                                    <div class="order-item-price">Quantité: 1</div>
-                                </div>
-                                <div class="order-item-price">15.99 €</div>
+                        <div class="order-summary" id="order-summary">
+                            <div class="loading">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                <p>Chargement du résumé...</p>
                             </div>
                         </div>
                         
-                        <div class="order-total">
-                            Total: 55.97 €
+                        <div class="order-total" id="order-total">
+                            Total: 0.00 €
                         </div>
                         
                         <button type="button" class="btn btn-confirm-order" onclick="processOrder()">
@@ -448,7 +458,119 @@ requireLogin(); // Redirige vers login.php si non connecté
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
+        // Variables globales pour Stripe
+        let stripe, elements, card;
+        let clientSecret = null;
+        let orderId = null;
+        
+        // Charger le résumé de la commande au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrderSummary();
+            initializeStripe();
+        });
+        
+        // Initialiser Stripe
+        function initializeStripe() {
+            // Remplacer par votre vraie clé publique Stripe
+            stripe = Stripe('pk_test_votre_cle_publique_de_test');
+            elements = stripe.elements();
+            
+            // Créer l'élément de carte
+            card = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#9e2146',
+                    },
+                },
+            });
+            
+            // Monter l'élément de carte
+            card.mount('#card-element');
+            
+            // Gérer les erreurs de validation
+            card.addEventListener('change', ({error}) => {
+                const displayError = document.getElementById('card-errors');
+                if (error) {
+                    displayError.textContent = error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+        }
+        
+        // Charger le résumé de la commande depuis le panier
+        async function loadOrderSummary() {
+            try {
+                const response = await fetch('backend/cart_api.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayOrderSummary(data);
+                } else {
+                    showOrderError('Erreur lors du chargement du panier');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showOrderError('Erreur lors du chargement du panier');
+            }
+        }
+        
+        // Afficher le résumé de la commande
+        function displayOrderSummary(data) {
+            const orderSummary = document.getElementById('order-summary');
+            const orderTotal = document.getElementById('order-total');
+            
+            if (!data.cart_items || data.cart_items.length === 0) {
+                orderSummary.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="bi bi-cart-x"></i>
+                        <p>Votre panier est vide</p>
+                    </div>
+                `;
+                orderTotal.textContent = 'Total: 0.00 €';
+                return;
+            }
+            
+            // Afficher les articles
+            orderSummary.innerHTML = data.cart_items.map(item => `
+                <div class="order-item">
+                    <img src="${item.image || 'https://via.placeholder.com/200x200?text=Produit'}" alt="${item.name}">
+                    <div class="order-item-details">
+                        <div class="order-item-name">${item.name}</div>
+                        <div class="order-item-price">Quantité: ${item.quantity}</div>
+                    </div>
+                    <div class="order-item-price">${item.total_price.toFixed(2)} €</div>
+                </div>
+            `).join('');
+            
+            // Mettre à jour le total
+            const total = data.total;
+            orderTotal.textContent = `Total: ${total.toFixed(2)} €`;
+        }
+        
+        // Afficher une erreur
+        function showOrderError(message) {
+            const orderSummary = document.getElementById('order-summary');
+            orderSummary.innerHTML = `
+                <div class="error-message">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
         // Sélection de la méthode de paiement
         document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function() {
@@ -470,7 +592,7 @@ requireLogin(); // Redirige vers login.php si non connecté
         });
 
         // Traitement de la commande
-        function processOrder() {
+        async function processOrder() {
             const form = document.getElementById('orderForm');
             const confirmBtn = document.querySelector('.btn-confirm-order');
             
@@ -491,51 +613,98 @@ requireLogin(); // Redirige vers login.php si non connecté
             confirmBtn.disabled = true;
             confirmBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Traitement en cours...';
             
-            // Simulation du traitement de la commande
-            setTimeout(() => {
-                // Afficher la confirmation
-                showOrderConfirmation();
-            }, 2000);
+            try {
+                // Récupérer les données du formulaire
+                const formData = new FormData(form);
+                const orderData = {
+                    firstName: formData.get('firstName'),
+                    lastName: formData.get('lastName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    address: formData.get('address'),
+                    postalCode: formData.get('postalCode'),
+                    city: formData.get('city'),
+                    country: formData.get('country'),
+                    notes: formData.get('notes'),
+                    paymentMethod: selectedMethod.dataset.method
+                };
+                
+                // Créer l'intention de paiement
+                const response = await fetch('backend/payment_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error);
+                }
+                
+                // Sauvegarder les données pour la confirmation
+                clientSecret = data.client_secret;
+                orderId = data.order_id;
+                
+                // Confirmer le paiement avec Stripe
+                const {error} = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: card,
+                        billing_details: {
+                            name: orderData.firstName + ' ' + orderData.lastName,
+                            email: orderData.email,
+                        },
+                    }
+                });
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+                
+                // Paiement réussi
+                showOrderConfirmation(orderId);
+                
+            } catch (error) {
+                console.error('Erreur de paiement:', error);
+                alert('Erreur lors du paiement: ' + error.message);
+                
+                // Réactiver le bouton
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="bi bi-lock me-2"></i>Confirmer ma commande';
+            }
         }
 
-        function showOrderConfirmation() {
+        function showOrderConfirmation(orderId) {
             const container = document.querySelector('.order-container .container');
             container.innerHTML = `
                 <div class="text-center py-5">
                     <div class="mb-4">
                         <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
                     </div>
-                    <h2 class="text-success mb-3">Commande confirmée !</h2>
+                    <h2 class="text-success mb-3">Paiement réussi !</h2>
                     <p class="lead mb-4">Votre commande a été traitée avec succès. Vous allez recevoir un email de confirmation avec le numéro de suivi.</p>
                     <div class="alert alert-info">
-                        <strong>Numéro de commande :</strong> #CMD-${Date.now().toString().slice(-6)}
+                        <strong>Numéro de commande :</strong> #${orderId}
+                    </div>
+                    <div class="alert alert-success">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <strong>Paiement sécurisé :</strong> Votre transaction a été traitée par Stripe
                     </div>
                     <div class="mt-4">
                         <a href="index.php" class="btn btn-outline-primary me-2">
                             <i class="bi bi-house me-2"></i>Retour à l'accueil
                         </a>
-                        <a href="panier.php" class="btn btn-primary">
-                            <i class="bi bi-cart me-2"></i>Voir mes commandes
+                        <a href="order_confirmation.php?order_id=${orderId}" class="btn btn-primary">
+                            <i class="bi bi-receipt me-2"></i>Voir la confirmation
                         </a>
                     </div>
                 </div>
             `;
         }
 
-        // Formatage automatique des champs
-        document.getElementById('cardNumber').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\s/g, '');
-            value = value.replace(/(\d{4})/g, '$1 ').trim();
-            e.target.value = value;
-        });
-
-        document.getElementById('cardExpiry').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.slice(0, 2) + '/' + value.slice(2, 4);
-            }
-            e.target.value = value;
-        });
+        // Formatage automatique des champs (supprimé car géré par Stripe)
     </script>
 </body>
 </html> 

@@ -1,4 +1,8 @@
-<?php // Bébé ?>
+<?php 
+// Bébé 
+session_start();
+require_once 'backend/db.php';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bébé - Ma Boutique</title>
     <link rel="stylesheet" href="bebe.css">
+    <link rel="stylesheet" href="product-buttons.css">
 </head>
 <body>
     <header>
@@ -36,7 +41,7 @@
                     <h2>${prod.name}</h2>
                     <p class="category">${prod.category || ''}</p>
                     <p class="price">${prod.price} €</p>
-                    <button class="cta">Voir</button>
+                                                <a href="product_detail.php?id=${prod.id}" class="btn-view-product">👁️ Voir</a>
                 </div>
             `).join('');
         });

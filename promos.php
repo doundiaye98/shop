@@ -1,4 +1,8 @@
-<?php // Promos ?>
+<?php 
+// Promos 
+session_start();
+require_once 'backend/db.php';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promos - Ma Boutique</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="product-buttons.css">
 </head>
 <body>
     <header>
@@ -38,7 +43,7 @@
                     <p class="category">${prod.category || ''}</p>
                     <p class="old-price">${prod.price} €</p>
                     <p class="promo-price">${prod.promo_price} €</p>
-                    <button class="cta">Voir</button>
+                                                <a href="product_detail.php?id=${prod.id}" class="btn-view-promo">🔥 Voir</a>
                 </div>
             `).join('');
         });

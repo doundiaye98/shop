@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test JavaScript du Panier</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .loading { color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test JavaScript du Panier</h1>
+    
+    <div class="test-section info">
+        <h3>📋 Instructions</h3>
+        <p>Cette page teste le JavaScript du panier étape par étape.</p>
+        <p><strong>Prérequis :</strong> Vous devez être connecté à votre compte.</p>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Test 1: Vérification de la session</h3>
+        <button onclick="checkSession()">Vérifier la session</button>
+        <div id="session-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Test 2: Test de l'API cart_api.php</h3>
+        <button onclick="testCartAPI()">Tester l'API</button>
+        <div id="api-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Test 3: Test du CartManager</h3>
+        <button onclick="testCartManager()">Tester CartManager</button>
+        <div id="cartmanager-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Test 4: Test d'ajout au panier</h3>
+        <button onclick="testAddToCart()">Ajouter un produit test</button>
+        <div id="add-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Test 5: Vérification des erreurs</h3>
+        <button onclick="checkErrors()">Vérifier les erreurs</button>
+        <div id="errors-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🎯 Actions recommandées</h3>
+        <ul>
+            <li><a href="panier.php">🛒 Tester la page panier réelle</a></li>
+            <li><a href="backend/cart_api.php">🔌 Tester l'API directement</a></li>
+            <li><a href="index.php">🏠 Retour à l'accueil</a></li>
+        </ul>
+    </div>
+
+    <script>
+        // Test 1: Vérification de la session
+        async function checkSession() {
+            const resultDiv = document.getElementById('session-result');
+            resultDiv.innerHTML = '<div class="loading">Vérification en cours...</div>';
+            
+            try {
+                const response = await fetch('backend/cart_api.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                
+                if (response.status === 401) {
+                    resultDiv.innerHTML = '<div class="error">❌ Non connecté - Erreur 401</div>';
+                } else if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✅ Connecté avec succès !<br>
+                            <strong>Produits dans le panier :</strong> ${data.item_count}<br>
+                            <strong>Total :</strong> ${data.total} €
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Erreur ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Erreur réseau : ${error.message}</div>`;
+            }
+        }
+
+        // Test 2: Test de l'API
+        async function testCartAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<div class="loading">Test de l'API en cours...</div>';
+            
+            try {
+                const response = await fetch('backend/cart_api.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✅ API fonctionne !<br>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Erreur API : ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Erreur : ${error.message}</div>`;
+            }
+        }
+
+        // Test 3: Test du CartManager
+        async function testCartManager() {
+            const resultDiv = document.getElementById('cartmanager-result');
+            resultDiv.innerHTML = '<div class="loading">Test du CartManager en cours...</div>';
+            
+            try {
+                // Vérifier si cart-manager.js est chargé
+                if (typeof CartManager === 'undefined') {
+                    resultDiv.innerHTML = '<div class="error">❌ CartManager non défini - Vérifiez que cart-manager.js est chargé</div>';
+                    return;
+                }
+                
+                const cartManager = new CartManager();
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ CartManager chargé avec succès !<br>
+                        <strong>Méthodes disponibles :</strong><br>
+                        - addToCart()<br>
+                        - removeFromCart()<br>
+                        - updateQuantity()<br>
+                        - getCart()
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Erreur CartManager : ${error.message}</div>`;
+            }
+        }
+
+        // Test 4: Test d'ajout au panier
+        async function testAddToCart() {
+            const resultDiv = document.getElementById('add-result');
+            resultDiv.innerHTML = '<div class="loading">Test d'ajout au panier en cours...</div>';
+            
+            try {
+                const response = await fetch('backend/cart_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        product_id: 18, // Chemise en coton - Blanc
+                        quantity: 1
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✅ Produit ajouté au panier !<br>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    const errorData = await response.json();
+                    resultDiv.innerHTML = `<div class="error">❌ Erreur lors de l'ajout : ${errorData.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Erreur : ${error.message}</div>`;
+            }
+        }
+
+        // Test 5: Vérification des erreurs
+        function checkErrors() {
+            const resultDiv = document.getElementById('errors-result');
+            
+            // Vérifier les erreurs dans la console
+            const errors = [];
+            
+            // Vérifier si les fichiers nécessaires sont accessibles
+            fetch('cart-manager.js')
+                .then(response => {
+                    if (!response.ok) errors.push('cart-manager.js non accessible');
+                })
+                .catch(() => errors.push('cart-manager.js non trouvé'));
+            
+            fetch('backend/cart_api.php')
+                .then(response => {
+                    if (!response.ok) errors.push('cart_api.php non accessible');
+                })
+                .catch(() => errors.push('cart_api.php non trouvé'));
+            
+            setTimeout(() => {
+                if (errors.length === 0) {
+                    resultDiv.innerHTML = '<div class="success">✅ Aucune erreur détectée</div>';
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ❌ Erreurs détectées :<br>
+                            <ul>${errors.map(error => `<li>${error}</li>`).join('')}</ul>
+                        </div>
+                    `;
+                }
+            }, 1000);
+        }
+
+        // Vérification automatique au chargement
+        window.addEventListener('load', function() {
+            console.log('🧪 Page de test JavaScript du panier chargée');
+            console.log('📋 Utilisez les boutons pour tester chaque composant');
+        });
+    </script>
+</body>
+</html>

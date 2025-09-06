@@ -228,19 +228,7 @@ session_start();
             </div>
             
             <!-- Avantages de l'inscription -->
-            <div class="benefits-section">
-                <div class="benefits-title">
-                    <i class="bi bi-star me-2"></i>Avantages de l'inscription
-                </div>
-                <ul class="benefits-list">
-                   
-                    <li><i class="bi bi-check-circle"></i>Offres exclusives et promotions</li>
-                    <li><i class="bi bi-check-circle"></i>Suivi de commande en temps réel</li>
-                    <li><i class="bi bi-check-circle"></i>Retours gratuits sous 30 jours</li>
-                    <li><i class="bi bi-check-circle"></i>Service client prioritaire</li>
-                    <li><i class="bi bi-check-circle"></i>Historique des commandes</li>
-                </ul>
-            </div>
+           
         </div>
     </div>
 

@@ -1,4 +1,8 @@
-<?php // Page Contact ?>
+<?php 
+// Page Contact
+require_once 'backend/db.php';
+include 'backend/navbar.php';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -219,7 +223,6 @@
     </style>
 </head>
 <body>
-    <?php include 'backend/navbar.php'; ?>
 
     <!-- Header Contact -->
     <div class="contact-header">
@@ -256,7 +259,7 @@
                                     </div>
                                     <div class="contact-details">
                                         <h5>Téléphone</h5>
-                                        <p>+33 1 23 45 67 89</p>
+                                        <p>+33 6 10 95 17 33</p>
                                     </div>
                                 </div>
                                 

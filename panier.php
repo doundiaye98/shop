@@ -1,5 +1,7 @@
 <?php 
 // Page Panier 
+session_start(); // Démarrer la session AVANT tout
+require_once 'backend/db.php';
 require_once 'backend/auth_check.php';
 requireLogin(); // Redirige vers login.php si non connecté
 ?>
@@ -96,12 +98,11 @@ requireLogin(); // Redirige vers login.php si non connecté
         }
         
         .quantity-btn {
-            background: #1a1a1a;
-            color: white;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -110,49 +111,38 @@ requireLogin(); // Redirige vers login.php si non connecté
         }
         
         .quantity-btn:hover {
-            background: #333;
-            transform: scale(1.1);
+            background: #f8f9fa;
+            border-color: #1a1a1a;
         }
         
         .quantity-input {
-            width: 60px;
+            width: 50px;
             text-align: center;
-            border: 2px solid #e9ecef;
-            border-radius: 6px;
-            padding: 0.5rem;
-            font-weight: 600;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.25rem;
         }
         
         .remove-btn {
-            background: #dc3545;
-            color: white;
+            background: none;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s ease;
         }
         
         .remove-btn:hover {
-            background: #c82333;
-            transform: scale(1.05);
+            color: #c82333;
         }
         
         .cart-summary {
             background: white;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 2rem;
-        }
-        
-        .summary-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 1.5rem;
-            text-align: center;
         }
         
         .summary-row {
@@ -160,41 +150,45 @@ requireLogin(); // Redirige vers login.php si non connecté
             justify-content: space-between;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid #eee;
         }
         
         .summary-total {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            border-top: 2px solid #1a1a1a;
-            padding-top: 1rem;
+            display: flex;
+            justify-content: space-between;
             margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #1a1a1a;
+            font-weight: 700;
+            font-size: 1.2rem;
         }
         
         .checkout-btn {
-            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            background: #28a745;
             color: white;
             border: none;
             padding: 1rem 2rem;
             border-radius: 8px;
-            font-size: 1.1rem;
             font-weight: 600;
             width: 100%;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             transition: all 0.3s ease;
         }
         
         .checkout-btn:hover {
-            background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
+            background: #218838;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            color: white;
+        }
+        
+        .checkout-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .empty-cart {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 3rem;
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -232,6 +226,22 @@ requireLogin(); // Redirige vers login.php si non connecté
             transform: translateY(-2px);
         }
         
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 768px) {
             .cart-header h1 {
                 font-size: 2rem;
@@ -265,77 +275,21 @@ requireLogin(); // Redirige vers login.php si non connecté
                 <!-- Liste des articles -->
                 <div class="col-lg-8">
                     <div id="cart-items">
-                        <!-- Exemple d'article dans le panier -->
-                        <div class="cart-item" data-item-id="1">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img src="https://via.placeholder.com/200x200?text=Produit" alt="Produit" class="img-fluid">
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="cart-item-title">Body bébé coton bio</div>
-                                    <div class="cart-item-category">Bébé - Body</div>
-                                    <div class="cart-item-price">
-                                        <span class="cart-item-old-price">24.99 €</span>
-                                        <span class="cart-item-promo">19.99 €</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="quantity-controls">
-                                        <button class="quantity-btn" onclick="updateQuantity(1, -1)">-</button>
-                                        <input type="number" class="quantity-input" value="2" min="1" max="10" id="qty-1">
-                                        <button class="quantity-btn" onclick="updateQuantity(1, 1)">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="cart-item-price">39.98 €</div>
-                                </div>
-                                <div class="col-md-1">
-                                    <button class="remove-btn" onclick="removeItem(1)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Deuxième article -->
-                        <div class="cart-item" data-item-id="2">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img src="https://via.placeholder.com/200x200?text=Jouet" alt="Jouet" class="img-fluid">
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="cart-item-title">Jouet d'éveil musical</div>
-                                    <div class="cart-item-category">Jouets - Éveil</div>
-                                    <div class="cart-item-price">15.99 €</div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="quantity-controls">
-                                        <button class="quantity-btn" onclick="updateQuantity(2, -1)">-</button>
-                                        <input type="number" class="quantity-input" value="1" min="1" max="10" id="qty-2">
-                                        <button class="quantity-btn" onclick="updateQuantity(2, 1)">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="cart-item-price">15.99 €</div>
-                                </div>
-                                <div class="col-md-1">
-                                    <button class="remove-btn" onclick="removeItem(2)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="loading">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            <p>Chargement de votre panier...</p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Résumé de la commande -->
+                
+                <!-- Résumé du panier -->
                 <div class="col-lg-4">
-                    <div class="cart-summary">
-                        <div class="summary-title">Résumé de la commande</div>
+                    <div class="cart-summary" id="cart-summary" style="display: none;">
+                        <h4 class="mb-3">Résumé de la commande</h4>
                         
                         <div class="summary-row">
-                            <span>Sous-total (3 articles)</span>
-                            <span>55.97 €</span>
+                            <span>Sous-total (0 article)</span>
+                            <span>0.00 €</span>
                         </div>
                         
                         <div class="summary-row">
@@ -343,26 +297,25 @@ requireLogin(); // Redirige vers login.php si non connecté
                             <span>Gratuite</span>
                         </div>
                         
-                        <div class="summary-row">
+                        <div class="summary-row" id="discount-row" style="display: none;">
                             <span>Réduction</span>
-                            <span class="text-danger">-5.00 €</span>
+                            <span>-5.00 €</span>
                         </div>
                         
-                        <div class="summary-row summary-total">
+                        <div class="summary-total">
                             <span>Total</span>
-                            <span>50.97 €</span>
+                            <span>0.00 €</span>
                         </div>
                         
-                        <button class="checkout-btn" onclick="window.location.href='commande.php'">
-                            <i class="bi bi-credit-card me-2"></i>
-                            Passer la commande
+                        <button class="checkout-btn" id="checkout-btn" disabled onclick="goToCheckout()">
+                            <i class="bi bi-credit-card me-2"></i>Passer la commande
                         </button>
                         
                         <div class="text-center mt-3">
-                            <a href="index.php" class="continue-shopping">
-                                <i class="bi bi-arrow-left me-2"></i>
-                                Continuer mes achats
-                            </a>
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"></i>
+                                Paiement sécurisé
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -371,100 +324,174 @@ requireLogin(); // Redirige vers login.php si non connecté
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="cart-manager.js"></script>
     <script>
-        // Fonctions pour gérer le panier
-        function updateQuantity(itemId, change) {
-            const input = document.getElementById(`qty-${itemId}`);
+        let cartManager;
+        
+        // Initialiser le gestionnaire de panier
+        document.addEventListener('DOMContentLoaded', function() {
+            cartManager = new CartManager();
+            loadCartDisplay();
+        });
+        
+        // Charger l'affichage du panier
+        async function loadCartDisplay() {
+            try {
+                const response = await fetch('backend/cart_api.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayCart(data);
+                } else {
+                    showEmptyCart('Erreur lors du chargement du panier');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showEmptyCart('Erreur lors du chargement du panier');
+            }
+        }
+        
+        // Afficher le contenu du panier
+        function displayCart(data) {
+            const cartItems = document.getElementById('cart-items');
+            const cartSummary = document.getElementById('cart-summary');
+            
+            if (!data.cart_items || data.cart_items.length === 0) {
+                showEmptyCart();
+                return;
+            }
+            
+            // Afficher les articles
+            cartItems.innerHTML = data.cart_items.map(item => `
+                <div class="cart-item" data-item-id="${item.product_id}">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="${item.image || 'https://via.placeholder.com/200x200?text=Produit'}" alt="${item.name}" class="img-fluid">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-category">${item.category}</div>
+                            <div class="cart-item-price">
+                                ${item.promo_price && item.promo_price < item.price 
+                                    ? `<span class="cart-item-old-price">${item.price} €</span><span class="cart-item-promo">${item.promo_price} €</span>`
+                                    : `<span>${item.price} €</span>`
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(${item.product_id}, -1)">-</button>
+                                <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="10" id="qty-${item.product_id}">
+                                <button class="quantity-btn" onclick="updateQuantity(${item.product_id}, 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="cart-item-price">${item.total_price.toFixed(2)} €</div>
+                        </div>
+                        <div class="col-md-1">
+                            <button class="remove-btn" onclick="removeItem(${item.product_id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Afficher le résumé
+            updateSummary(data);
+            cartSummary.style.display = 'block';
+        }
+        
+        // Mettre à jour le résumé
+        function updateSummary(data) {
+            const subtotal = data.total;
+            const itemCount = data.item_count;
+            const discountRow = document.getElementById('discount-row');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            
+            // Mettre à jour le sous-total - Utiliser des sélecteurs plus précis
+            const subtotalElement = document.querySelector('.summary-row:first-child span:last-child');
+            const subtotalTextElement = document.querySelector('.summary-row:first-child span:first-child');
+            const totalElement = document.querySelector('.summary-total span:last-child');
+            
+            // Vérifier que les éléments existent avant de les modifier
+            if (subtotalElement) {
+                subtotalElement.textContent = subtotal.toFixed(2) + ' €';
+            }
+            
+            if (subtotalTextElement) {
+                subtotalTextElement.textContent = `Sous-total (${itemCount} article${itemCount > 1 ? 's' : ''})`;
+            }
+            
+            // Appliquer la réduction si applicable
+            let finalTotal = subtotal;
+            if (subtotal > 50) {
+                finalTotal = subtotal - 5;
+                if (discountRow) {
+                    discountRow.style.display = 'block';
+                }
+            } else {
+                if (discountRow) {
+                    discountRow.style.display = 'none';
+                }
+            }
+            
+            // Mettre à jour le total
+            if (totalElement) {
+                totalElement.textContent = finalTotal.toFixed(2) + ' €';
+            }
+            
+            // Activer le bouton de commande
+            if (checkoutBtn) {
+                checkoutBtn.disabled = false;
+            }
+        }
+        
+        // Mettre à jour la quantité
+        async function updateQuantity(productId, change) {
+            const input = document.getElementById(`qty-${productId}`);
             let newValue = parseInt(input.value) + change;
             if (newValue < 1) newValue = 1;
             if (newValue > 10) newValue = 10;
-            input.value = newValue;
             
-            // Mettre à jour le prix de l'article
-            updateItemPrice(itemId);
-            updateCart();
-        }
-
-        function updateItemPrice(itemId) {
-            const item = document.querySelector(`[data-item-id="${itemId}"]`);
-            const quantity = parseInt(document.getElementById(`qty-${itemId}`).value);
-            const priceElement = item.querySelector('.cart-item-price');
-            const totalElement = item.querySelector('.col-md-2 .cart-item-price');
-            
-            // Récupérer le prix unitaire (enlever le prix total actuel)
-            let unitPrice = 0;
-            if (itemId == 1) {
-                unitPrice = 19.99; // Prix promo du body
-            } else if (itemId == 2) {
-                unitPrice = 15.99; // Prix du jouet
+            try {
+                const success = await cartManager.updateQuantity(productId, newValue);
+                if (success) {
+                    input.value = newValue;
+                    await loadCartDisplay(); // Recharger l'affichage
+                }
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour:', error);
             }
-            
-            // Calculer le nouveau prix total pour cet article
-            const newTotal = (unitPrice * quantity).toFixed(2);
-            totalElement.textContent = newTotal + ' €';
         }
-
-        function removeItem(itemId) {
+        
+        // Supprimer un article
+        async function removeItem(productId) {
             if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
-                const item = document.querySelector(`[data-item-id="${itemId}"]`);
-                if (item) {
-                    item.remove();
-                    updateCart();
+                try {
+                    const success = await cartManager.removeFromCart(productId);
+                    if (success) {
+                        await loadCartDisplay(); // Recharger l'affichage
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la suppression:', error);
                 }
             }
         }
-
-        function updateCart() {
-            let totalItems = 0;
-            let subtotal = 0;
+        
+        // Afficher le panier vide
+        function showEmptyCart(message = null) {
+            const cartItems = document.getElementById('cart-items');
+            const cartSummary = document.getElementById('cart-summary');
             
-            // Calculer le nombre total d'articles et le sous-total
-            document.querySelectorAll('.cart-item').forEach(item => {
-                const quantity = parseInt(item.querySelector('.quantity-input').value);
-                const priceText = item.querySelector('.col-md-2 .cart-item-price').textContent;
-                const price = parseFloat(priceText.replace(' €', ''));
-                
-                totalItems += quantity;
-                subtotal += price;
-            });
-            
-            // Mettre à jour l'affichage du résumé
-            const summarySubtotal = document.querySelector('.summary-row:first-child span:last-child');
-            const summaryTotal = document.querySelector('.summary-total span:last-child');
-            
-            if (summarySubtotal) {
-                summarySubtotal.textContent = subtotal.toFixed(2) + ' €';
-            }
-            
-            if (summaryTotal) {
-                // Appliquer la réduction de 5€ si le total est > 50€
-                let finalTotal = subtotal;
-                if (subtotal > 50) {
-                    finalTotal = subtotal - 5;
-                }
-                summaryTotal.textContent = finalTotal.toFixed(2) + ' €';
-            }
-            
-            // Mettre à jour le nombre d'articles dans le résumé
-            const summaryItems = document.querySelector('.summary-row:first-child span:first-child');
-            if (summaryItems) {
-                summaryItems.textContent = `Sous-total (${totalItems} article${totalItems > 1 ? 's' : ''})`;
-            }
-            
-            // Vérifier si le panier est vide
-            const cartItems = document.querySelectorAll('.cart-item');
-            if (cartItems.length === 0) {
-                showEmptyCart();
-            }
-        }
-
-        function showEmptyCart() {
-            const cartContainer = document.querySelector('.col-lg-8');
-            cartContainer.innerHTML = `
+            cartItems.innerHTML = `
                 <div class="empty-cart">
                     <i class="bi bi-cart-x"></i>
                     <h3>Votre panier est vide</h3>
-                    <p>Ajoutez des produits pour commencer vos achats</p>
+                    <p>${message || 'Ajoutez des produits pour commencer vos achats'}</p>
                     <a href="index.php" class="continue-shopping">
                         <i class="bi bi-arrow-left me-2"></i>
                         Continuer mes achats
@@ -472,17 +499,20 @@ requireLogin(); // Redirige vers login.php si non connecté
                 </div>
             `;
             
-            // Masquer le résumé si le panier est vide
-            const summary = document.querySelector('.cart-summary');
-            if (summary) {
-                summary.style.display = 'none';
+            cartSummary.style.display = 'none';
+        }
+        
+        // Rediriger vers la page de commande
+        function goToCheckout() {
+            // Vérifier que le bouton est activé
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (checkoutBtn && !checkoutBtn.disabled) {
+                // Rediriger vers la page de commande
+                window.location.href = 'commande.php';
+            } else {
+                console.error('Le bouton de commande est désactivé');
             }
         }
-
-        // Initialiser le panier au chargement de la page
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCart();
-        });
     </script>
 </body>
 </html> 

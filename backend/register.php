@@ -29,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
     $stmt->execute([$username, $email, $passwordHash]);
 
-    echo '<script>alert("Inscription réussie ! Connectez-vous.");window.location.href="../login.html";</script>';
+    // Redirection automatique vers la page de connexion avec un message de succès
+    $_SESSION['success_message'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+    header('Location: ../login.php');
     exit;
 } 
