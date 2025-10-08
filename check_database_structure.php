@@ -1,97 +1,86 @@
 <?php
-// Script pour examiner la structure réelle des tables
-// Affiche les colonnes et la structure de chaque table
+// Vérification de la structure de la base de données
+session_start();
+
+// Vérifier si l'utilisateur est admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    die('Accès non autorisé');
+}
 
 require_once 'backend/db.php';
 
-echo "<h2>🔍 Structure de la base de données</h2>";
+echo "<h2>Vérification de la structure de la base de données</h2>";
 
 try {
-    // Vérifier la connexion
-    echo "<h3>✅ Connexion à la base de données</h3>";
-    echo "<p>Base de données : " . $pdo->query("SELECT DATABASE()")->fetchColumn() . "</p>";
-    echo "<p>Version MySQL : " . $pdo->query("SELECT VERSION()")->fetchColumn() . "</p>";
-
-    // Lister toutes les tables
-    echo "<h3>📋 Tables disponibles :</h3>";
-    $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
-    if (count($tables) > 0) {
-        echo "<ul>";
-        foreach ($tables as $table) {
-            echo "<li>{$table}</li>";
+    // Vérifier la table products
+    echo "<h3>Table products :</h3>";
+    $stmt = $pdo->query("DESCRIBE products");
+    $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo "<table border='1'><tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>";
+    foreach ($columns as $column) {
+        echo "<tr>";
+        foreach ($column as $value) {
+            echo "<td>" . htmlspecialchars($value) . "</td>";
         }
-        echo "</ul>";
-    } else {
-        echo "<p>Aucune table trouvée.</p>";
+        echo "</tr>";
     }
-
-    // Examiner la structure de chaque table
-    foreach ($tables as $table) {
-        echo "<h3>🏗️ Structure de la table '{$table}' :</h3>";
+    echo "</table>";
+    
+    // Vérifier la table product_images
+    echo "<h3>Table product_images :</h3>";
+    try {
+        $stmt = $pdo->query("DESCRIBE product_images");
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo "<table border='1'><tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th><th>Extra</th></tr>";
+        foreach ($columns as $column) {
+            echo "<tr>";
+            foreach ($column as $value) {
+                echo "<td>" . htmlspecialchars($value) . "</td>";
+            }
+            echo "</tr>";
+        }
+        echo "</table>";
+    } catch (PDOException $e) {
+        echo "<p style='color: red;'>Erreur : La table product_images n'existe pas ou a un problème : " . $e->getMessage() . "</p>";
         
+        // Créer la table product_images
+        echo "<h4>Création de la table product_images :</h4>";
         try {
-            // Afficher la structure de la table
-            $columns = $pdo->query("DESCRIBE {$table}")->fetchAll();
-            if (count($columns) > 0) {
-                echo "<table border='1' style='border-collapse: collapse; width: 100%; margin-bottom: 20px;'>";
-                echo "<tr><th>Champ</th><th>Type</th><th>Null</th><th>Clé</th><th>Défaut</th><th>Extra</th></tr>";
-                foreach ($columns as $col) {
-                    echo "<tr>";
-                    echo "<td>{$col['Field']}</td>";
-                    echo "<td>{$col['Type']}</td>";
-                    echo "<td>{$col['Null']}</td>";
-                    echo "<td>{$col['Key']}</td>";
-                    echo "<td>" . ($col['Default'] ?? 'NULL') . "</td>";
-                    echo "<td>{$col['Extra']}</td>";
-                    echo "</tr>";
-                }
-                echo "</table>";
-            }
-            
-            // Afficher quelques exemples de données
-            echo "<h4>📊 Exemples de données (5 premières lignes) :</h4>";
-            $data = $pdo->query("SELECT * FROM {$table} LIMIT 5")->fetchAll();
-            if (count($data) > 0) {
-                echo "<table border='1' style='border-collapse: collapse; width: 100%; margin-bottom: 20px;'>";
-                // En-têtes
-                echo "<tr>";
-                foreach (array_keys($data[0]) as $header) {
-                    echo "<th>{$header}</th>";
-                }
-                echo "</tr>";
-                // Données
-                foreach ($data as $row) {
-                    echo "<tr>";
-                    foreach ($row as $value) {
-                        echo "<td>" . htmlspecialchars($value ?? 'NULL') . "</td>";
-                    }
-                    echo "</tr>";
-                }
-                echo "</table>";
-            } else {
-                echo "<p>Aucune donnée dans cette table.</p>";
-            }
-            
-        } catch (PDOException $e) {
-            echo "<p>❌ Erreur avec la table '{$table}' : " . $e->getMessage() . "</p>";
+            $createTable = "
+                CREATE TABLE IF NOT EXISTS product_images (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    product_id INT NOT NULL,
+                    image_url VARCHAR(255) NOT NULL,
+                    image_order INT DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+                )
+            ";
+            $pdo->exec($createTable);
+            echo "<p style='color: green;'>Table product_images créée avec succès !</p>";
+        } catch (PDOException $e2) {
+            echo "<p style='color: red;'>Erreur lors de la création : " . $e2->getMessage() . "</p>";
         }
-        
-        echo "<hr>";
     }
-
-    echo "<h3>📝 Actions recommandées :</h3>";
-    echo "<ul>";
-    echo "<li><a href='index.php'>🏠 Retour à l'accueil</a></li>";
-    echo "</ul>";
-
+    
+    // Vérifier les permissions du dossier uploads
+    echo "<h3>Dossier uploads :</h3>";
+    $uploadDir = 'uploads/products/';
+    echo "<p>Chemin : " . $uploadDir . "</p>";
+    echo "<p>Existe : " . (is_dir($uploadDir) ? 'OUI' : 'NON') . "</p>";
+    echo "<p>Lisible : " . (is_readable($uploadDir) ? 'OUI' : 'NON') . "</p>";
+    echo "<p>Écriture : " . (is_writable($uploadDir) ? 'OUI' : 'NON') . "</p>";
+    
+    // Créer le dossier s'il n'existe pas
+    if (!is_dir($uploadDir)) {
+        if (mkdir($uploadDir, 0755, true)) {
+            echo "<p style='color: green;'>Dossier créé avec succès !</p>";
+        } else {
+            echo "<p style='color: red;'>Erreur lors de la création du dossier</p>";
+        }
+    }
+    
 } catch (PDOException $e) {
-    echo "<h3>❌ Erreur de connexion à la base de données :</h3>";
-    echo "<p>Erreur : " . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<p>Vérifiez que :</p>";
-    echo "<ul>";
-    echo "<li>Votre serveur MySQL est démarré</li>";
-    echo "<li>La base de données 'shop' existe</li>";
-    echo "<li>Les identifiants dans 'backend/db.php' sont corrects</li>";
-    echo "</ul>";
+    echo "<p style='color: red;'>Erreur de base de données : " . $e->getMessage() . "</p>";
 }
 ?>

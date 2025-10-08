@@ -33,6 +33,32 @@ require_once 'backend/db.php';
             height: auto;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .thumbnail-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .thumbnail-image:hover {
+            border-color: #28a745;
+            transform: scale(1.05);
+        }
+        
+        .thumbnail-image.active {
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
         }
         
         .product-title {
@@ -196,7 +222,18 @@ require_once 'backend/db.php';
             <div class="product-detail-card">
                 <div class="row">
                     <div class="col-lg-6">
-                        <img id="productImage" src="https://via.placeholder.com/400x400?text=Produit" alt="Produit" class="product-image">
+                        <!-- Carrousel d'images -->
+                        <div id="productImagesContainer">
+                            <!-- Image principale -->
+                            <div class="main-image-container mb-3">
+                                <img id="productImage" src="https://via.placeholder.com/400x400?text=Produit" alt="Produit" class="product-image">
+                            </div>
+                            
+                            <!-- Miniatures (affichées seulement s'il y a plusieurs images) -->
+                            <div id="thumbnailsContainer" style="display: none;">
+                                <div class="row" id="thumbnailsList"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-6">
                         <h1 id="productTitle" class="product-title">Chargement...</h1>
@@ -290,8 +327,11 @@ require_once 'backend/db.php';
                 document.getElementById('productCategoryInfo').textContent = product.category || 'Non catégorisé';
                 document.getElementById('productDate').textContent = product.created_at ? new Date(product.created_at).toLocaleDateString('fr-FR') : 'Non disponible';
                 
-                // Gérer l'image
-                if (product.image && product.image.trim() !== '') {
+                // Gérer les images multiples
+                if (product.images && product.images.length > 0) {
+                    setupProductImages(product.images);
+                } else if (product.image && product.image.trim() !== '') {
+                    // Fallback pour l'ancien système
                     document.getElementById('productImage').src = product.image;
                 } else {
                     document.getElementById('productImage').src = 'https://via.placeholder.com/400x400?text=Image+non+disponible';
@@ -324,7 +364,60 @@ require_once 'backend/db.php';
                 alert('Erreur lors du chargement du produit: ' + error.message);
             });
         
-
+        // Fonction pour configurer les images multiples
+        function setupProductImages(images) {
+            const mainImage = document.getElementById('productImage');
+            const thumbnailsContainer = document.getElementById('thumbnailsContainer');
+            const thumbnailsList = document.getElementById('thumbnailsList');
+            
+            if (images.length === 0) return;
+            
+            // Afficher la première image
+            mainImage.src = images[0].image_path;
+            mainImage.alt = 'Image principale du produit';
+            
+            // S'il n'y a qu'une seule image, ne pas afficher les miniatures
+            if (images.length === 1) {
+                thumbnailsContainer.style.display = 'none';
+                return;
+            }
+            
+            // Créer les miniatures
+            thumbnailsList.innerHTML = '';
+            images.forEach((image, index) => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'col-4 col-sm-3 col-md-2 mb-2';
+                
+                const thumbnailImg = document.createElement('img');
+                thumbnailImg.src = image.image_path;
+                thumbnailImg.alt = `Image ${index + 1}`;
+                thumbnailImg.className = `thumbnail-image ${index === 0 ? 'active' : ''}`;
+                thumbnailImg.onclick = () => changeMainImage(image.image_path, index);
+                
+                colDiv.appendChild(thumbnailImg);
+                thumbnailsList.appendChild(colDiv);
+            });
+            
+            thumbnailsContainer.style.display = 'block';
+        }
+        
+        // Fonction pour changer l'image principale
+        function changeMainImage(imageUrl, index) {
+            const mainImage = document.getElementById('productImage');
+            const thumbnails = document.querySelectorAll('.thumbnail-image');
+            
+            // Mettre à jour l'image principale
+            mainImage.src = imageUrl;
+            
+            // Mettre à jour les classes active des miniatures
+            thumbnails.forEach((thumb, i) => {
+                if (i === index) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+        }
         
         // Fonction pour changer la quantité
         function changeQuantity(delta) {
@@ -402,5 +495,7 @@ require_once 'backend/db.php';
             }
         }
     </script>
+    
+    <?php include 'footer.php'; ?>
 </body>
 </html>

@@ -1,0 +1,396 @@
+/* ========================================
+   STYLES POUR LIENS JOLIS
+   ======================================== */
+
+/* Liens de base améliorés */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 500;
+}
+
+a:hover {
+    color: var(--dark-blue);
+    text-decoration: none;
+}
+
+/* ========================================
+   EFFETS DE LIENS
+   ======================================== */
+
+/* 1. Lien avec soulignement animé */
+a.link-underline {
+    position: relative;
+    padding-bottom: 2px;
+    color: var(--primary-color);
+}
+
+a.link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    transition: width 0.3s ease;
+}
+
+a.link-underline:hover::after {
+    width: 100%;
+}
+
+/* 2. Lien avec fond au survol */
+a.link-bg {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.3s ease;
+    color: var(--primary-color);
+}
+
+a.link-bg:hover {
+    background: var(--light-blue);
+    color: var(--dark-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.15);
+}
+
+/* 3. Lien avec bordure */
+a.link-border {
+    padding: 0.5rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: var(--primary-color);
+}
+
+a.link-border:hover {
+    border-color: var(--primary-color);
+    background: rgba(44, 90, 160, 0.05);
+    color: var(--dark-blue);
+}
+
+/* 4. Lien avec gradient */
+a.link-gradient {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(44, 90, 160, 0.2);
+}
+
+a.link-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3);
+    color: white;
+}
+
+/* 5. Lien avec effet de brillance */
+a.link-shine {
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+a.link-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+a.link-shine:hover::before {
+    left: 100%;
+}
+
+a.link-shine:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3);
+    color: white;
+}
+
+/* 6. Lien avec pulsation */
+a.link-pulse {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--accent-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+a.link-pulse:hover {
+    animation: none;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+    color: white;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* 7. Lien avec rebond */
+a.link-bounce {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--success-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+a.link-bounce:hover {
+    animation: bounce 0.6s ease;
+    color: white;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    60% { transform: translateY(-3px); }
+}
+
+/* 8. Lien avec rotation */
+a.link-rotate {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--secondary-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+a.link-rotate:hover {
+    transform: rotate(2deg) scale(1.05);
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+    color: white;
+}
+
+/* 9. Lien avec glissement */
+a.link-slide {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+a.link-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--secondary-color);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+a.link-slide:hover::before {
+    left: 0;
+}
+
+a.link-slide:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3);
+}
+
+/* 10. Lien avec effet de vague */
+a.link-wave {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+a.link-wave::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.6s ease;
+}
+
+a.link-wave:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+a.link-wave:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3);
+}
+
+/* 11. Lien avec effet de zoom */
+a.link-zoom {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+a.link-zoom:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(44, 90, 160, 0.4);
+    color: white;
+}
+
+/* 12. Lien avec effet de flottement */
+a.link-float {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--success-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+a.link-float:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    color: white;
+}
+
+/* ========================================
+   LIENS SPÉCIAUX PAR CONTEXTE
+   ======================================== */
+
+/* Liens de navigation */
+.nav-links a {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    color: var(--text-dark);
+}
+
+.nav-links a:hover {
+    background: var(--hover-bg);
+    color: var(--primary-color);
+}
+
+/* Liens de produits */
+.product-link {
+    color: var(--primary-color);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.product-link:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Liens de catégorie */
+.category-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    background: var(--light-blue);
+    color: var(--primary-color);
+    border-radius: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.category-link:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+}
+
+/* Liens de footer */
+.footer-link {
+    color: var(--text-dark);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    a.link-bg,
+    a.link-border,
+    a.link-gradient,
+    a.link-shine,
+    a.link-pulse,
+    a.link-bounce,
+    a.link-rotate,
+    a.link-slide,
+    a.link-wave,
+    a.link-zoom,
+    a.link-float {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .category-link {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITÉ
+   ======================================== */
+
+a:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Amélioration pour les utilisateurs préférant moins d'animations */
+@media (prefers-reduced-motion: reduce) {
+    a,
+    a.link-underline::after,
+    a.link-shine::before,
+    a.link-slide::before,
+    a.link-wave::before {
+        transition: none;
+        animation: none;
+    }
+}

@@ -3,7 +3,11 @@
 // Pour la production, modifiez ces valeurs selon votre hébergeur
 
 // Configuration locale (développement)
-if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.1') {
+$is_local = !isset($_SERVER['HTTP_HOST']) || 
+           $_SERVER['HTTP_HOST'] === 'localhost' || 
+           $_SERVER['HTTP_HOST'] === '127.0.0.1';
+
+if ($is_local) {
     $host = 'localhost';
     $db   = 'shop';
     $user = 'root';
@@ -29,7 +33,7 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
     // En production, ne pas afficher les détails d'erreur
-    if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.1') {
+    if ($is_local) {
         throw new PDOException($e->getMessage(), (int)$e->getCode());
     } else {
         error_log("Erreur de connexion à la base de données: " . $e->getMessage());

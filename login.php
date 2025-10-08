@@ -319,6 +319,11 @@ try {
                         Retour à l'accueil
                     </a>
                 </p>
+                <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                    <i class="bi bi-code-slash"></i> 
+                    Créé par 
+                    <span style="color: var(--secondary-color); font-weight: 600;">DOUCODER</span>
+                </p>
             </div>
         </div>
     </div>

@@ -252,9 +252,7 @@ require_once 'backend/db.php';
         </section>
     </div>
 
-    <footer class="text-center py-4 bg-light mt-5">
-        <p class="mb-0">&copy; 2024 Mada's Kids. Tous droits réservés.</p>
-    </footer>
+    <?php include 'footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -620,5 +620,6 @@ require_once 'backend/db.php';
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
     <script src="admin_dashboard.js"></script>
+    <script src="admin_product_images.js"></script>
 </body>
 </html>

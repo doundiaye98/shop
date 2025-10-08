@@ -150,19 +150,29 @@
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="productImage" class="form-label">Image du produit</label>
-                        <input type="file" class="form-control" id="productImage" name="image" accept="image/*">
-                        <div class="form-text">Formats acceptés : JPG, PNG, GIF. Taille max : 2MB</div>
-                    </div>
-                    
-                    <div id="currentImageContainer" class="mb-3" style="display: none;">
-                        <label class="form-label">Image actuelle</label>
-                        <div class="d-flex align-items-center">
-                            <img id="currentImage" src="" alt="Image actuelle" class="img-thumbnail me-3" style="max-width: 100px;">
-                            <button type="button" class="btn btn-outline-danger btn-sm" id="removeCurrentImage">
-                                <i class="bi bi-trash me-1"></i>Supprimer
-                            </button>
+                    <!-- Section Photos du produit (3 max) -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-images me-2"></i>Photos du produit 
+                            <span class="badge bg-info ms-2">3 max</span>
+                        </label>
+                        
+                        <!-- Photos actuelles -->
+                        <div id="currentImagesContainer" class="mb-3" style="display: none;">
+                            <div class="row" id="currentImagesList"></div>
+                        </div>
+                        
+                        <!-- Upload de nouvelles photos -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row" id="imageUploadContainer">
+                                    <!-- Les champs d'upload seront générés dynamiquement -->
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Formats acceptés : JPG, PNG, GIF. Taille max : 2MB par image. Maximum 3 photos par produit.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

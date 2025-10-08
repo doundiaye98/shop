@@ -1,52 +1,38 @@
+# Fichiers de test à ne pas pousser sur GitHub
+test_*.php
+check_*.php
+create_*.php
+clear_*.php
+execute_*.php
+debug_*.php
+verification_*.php
+
 # Fichiers de configuration sensibles
-.env
-config.php
-*.key
-*.pem
+backend/db.php
 
-# Fichiers de base de données
-*.sql
-*.db
-*.sqlite
-
-# Fichiers temporaires
-*.tmp
-*.temp
+# Logs et fichiers temporaires
 *.log
+*.tmp
+error_log
+
+# Uploads et fichiers utilisateur
+uploads/*
+!uploads/.gitkeep
+
+# Cache
+cache/*
 *.cache
 
-# Fichiers système
+# Systeme
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Fichiers d'éditeur
+# IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
+*.sublime-*
 
-# Fichiers de session PHP
-sessions/
-*.sess
-
-# Fichiers de cache
-cache/
-tmp/
-
-# Fichiers de sauvegarde
-*.bak
-*.backup
-*.old
-
-# Fichiers de test temporaires
-test_*.php
-*_test.php
-
-# Dependencies
+# Dependances (si vous utilisez Composer)
 vendor/
-composer.lock
-
-# Stripe configuration files (contain sensitive data)
-backend/stripe_config.php
+node_modules/

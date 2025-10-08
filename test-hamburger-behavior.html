@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍔 Test Menu Hamburger - Style Vertbaudet</title>
+    <link rel="stylesheet" href="navbar-ecommerce.css">
+    <style>
+        .test-container {
+            padding: 100px 20px 50px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .test-title {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .behavior-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .behavior-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .behavior-card h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+        
+        .screen-size {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .expected-behavior {
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+            font-size: 14px;
+            color: #155724;
+        }
+        
+        .current-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .status-ok {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-issue {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .resize-instructions {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        .resize-instructions h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .behavior-test {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar avec le comportement corrigé -->
+    <nav class="ecommerce-navbar">
+        <div class="navbar-container">
+            <!-- Logo -->
+            <div class="navbar-logo">
+                <a href="index.php">
+                    <span class="logo-text">Ma Boutique</span>
+                </a>
+            </div>
+            
+            <!-- Menu Principal (Desktop uniquement) -->
+            <div class="navbar-menu" id="navbarMenu">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a href="#" class="nav-link">Accueil</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Bébé</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Fille</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Garçon</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Nouveautés</a></li>
+                </ul>
+            </div>
+            
+            <!-- Icônes -->
+            <div class="navbar-icons">
+                <a href="#" class="icon-link">🔍</a>
+                <a href="#" class="icon-link">👤</a>
+                <a href="#" class="icon-link">❤️</a>
+                <a href="#" class="icon-link">🛒</a>
+            </div>
+            
+            <!-- Menu hamburger (Mobile uniquement) -->
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span class="burger-line"></span>
+                <span class="burger-line"></span>
+                <span class="burger-line"></span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Menu mobile -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <h3>Menu</h3>
+            <button class="mobile-menu-close" id="mobileMenuClose">✕</button>
+        </div>
+        <div class="mobile-menu-content">
+            <ul class="mobile-nav">
+                <li><a href="#">Accueil</a></li>
+                <li><a href="#">Bébé</a></li>
+                <li><a href="#">Fille</a></li>
+                <li><a href="#">Garçon</a></li>
+                <li><a href="#">Nouveautés</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <div class="test-container">
+        <div class="test-section">
+            <h1 class="test-title">🍔 Test Menu Hamburger - Comportement Vertbaudet</h1>
+            
+            <div class="resize-instructions">
+                <h4>📱 Instructions de Test</h4>
+                <ol>
+                    <li><strong>Desktop (>768px)</strong> : Le menu hamburger doit être <strong>invisible</strong></li>
+                    <li><strong>Mobile (≤768px)</strong> : Le menu hamburger doit <strong>apparaître</strong></li>
+                    <li><strong>Redimensionnez</strong> votre fenêtre pour tester les deux modes</li>
+                    <li><strong>F12 → Mode responsive</strong> pour simuler différentes tailles</li>
+                </ol>
+            </div>
+            
+            <div class="behavior-test">
+                <div class="behavior-card">
+                    <h4>🖥️ Mode Desktop</h4>
+                    <div class="screen-size">> 768px de largeur</div>
+                    <div class="expected-behavior">
+                        ✅ <strong>Attendu :</strong><br>
+                        • Menu hamburger INVISIBLE<br>
+                        • Menu horizontal VISIBLE<br>
+                        • Mega-menus fonctionnels
+                    </div>
+                    <div class="current-status" id="desktopStatus">
+                        Redimensionnez pour tester
+                    </div>
+                </div>
+                
+                <div class="behavior-card">
+                    <h4>📱 Mode Mobile</h4>
+                    <div class="screen-size">≤ 768px de largeur</div>
+                    <div class="expected-behavior">
+                        ✅ <strong>Attendu :</strong><br>
+                        • Menu hamburger VISIBLE<br>
+                        • Menu horizontal MASQUÉ<br>
+                        • Clic ouvre menu latéral
+                    </div>
+                    <div class="current-status" id="mobileStatus">
+                        Redimensionnez pour tester
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <p style="color: #666; font-size: 16px;">
+                    <strong>Taille actuelle :</strong> <span id="currentWidth"></span>px<br>
+                    <strong>Mode :</strong> <span id="currentMode"></span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">🔧 Résolution des Problèmes</h2>
+            
+            <div style="background: #f8d7da; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="color: #721c24; margin-top: 0;">❌ Si le hamburger est toujours visible sur desktop :</h4>
+                <ul style="color: #721c24; margin: 0;">
+                    <li>Vérifiez que les <strong>media queries</strong> sont bien appliquées</li>
+                    <li>Ouvrez les <strong>outils développeur</strong> (F12) → Onglet "Elements"</li>
+                    <li>Cherchez <code>.mobile-menu-toggle</code> et vérifiez le CSS appliqué</li>
+                    <li>Il doit avoir <code>display: none !important</code> sur desktop</li>
+                </ul>
+            </div>
+            
+            <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="color: #155724; margin-top: 0;">✅ Comportement Correct :</h4>
+                <ul style="color: #155724; margin: 0;">
+                    <li><strong>Desktop :</strong> Menu horizontal visible, hamburger invisible</li>
+                    <li><strong>Mobile :</strong> Hamburger visible, menu horizontal invisible</li>
+                    <li><strong>Transition fluide</strong> lors du redimensionnement</li>
+                    <li><strong>Animation</strong> hamburger → X au clic</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script src="navbar-ecommerce.js"></script>
+    <script>
+        // Test du comportement responsive
+        function checkResponsiveBehavior() {
+            const width = window.innerWidth;
+            const hamburger = document.getElementById('mobileMenuToggle');
+            const menu = document.getElementById('navbarMenu');
+            const desktopStatus = document.getElementById('desktopStatus');
+            const mobileStatus = document.getElementById('mobileStatus');
+            const currentWidth = document.getElementById('currentWidth');
+            const currentMode = document.getElementById('currentMode');
+            
+            // Mettre à jour les affichages
+            currentWidth.textContent = width;
+            
+            if (width > 768) {
+                // Mode Desktop
+                currentMode.textContent = 'Desktop';
+                
+                const hamburgerVisible = window.getComputedStyle(hamburger).display !== 'none';
+                const menuVisible = window.getComputedStyle(menu).display !== 'none';
+                
+                if (!hamburgerVisible && menuVisible) {
+                    desktopStatus.textContent = '✅ Comportement correct';
+                    desktopStatus.className = 'current-status status-ok';
+                } else {
+                    desktopStatus.textContent = '❌ Problème détecté';
+                    desktopStatus.className = 'current-status status-issue';
+                }
+                
+                mobileStatus.textContent = 'Non applicable (mode desktop)';
+                mobileStatus.className = 'current-status';
+                
+            } else {
+                // Mode Mobile
+                currentMode.textContent = 'Mobile';
+                
+                const hamburgerVisible = window.getComputedStyle(hamburger).display !== 'none';
+                const menuVisible = window.getComputedStyle(menu).display !== 'none';
+                
+                if (hamburgerVisible && !menuVisible) {
+                    mobileStatus.textContent = '✅ Comportement correct';
+                    mobileStatus.className = 'current-status status-ok';
+                } else {
+                    mobileStatus.textContent = '❌ Problème détecté';
+                    mobileStatus.className = 'current-status status-issue';
+                }
+                
+                desktopStatus.textContent = 'Non applicable (mode mobile)';
+                desktopStatus.className = 'current-status';
+            }
+        }
+        
+        // Vérifier au chargement et au redimensionnement
+        checkResponsiveBehavior();
+        window.addEventListener('resize', checkResponsiveBehavior);
+        
+        console.log('🍔 Test du menu hamburger chargé !');
+        console.log('📱 Redimensionnez la fenêtre pour tester le comportement responsive');
+    </script>
+</body>
+</html>

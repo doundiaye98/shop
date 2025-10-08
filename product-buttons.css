@@ -43,31 +43,9 @@
     left: 100%;
 }
 
-/* Variante pour la page d'accueil */
-.btn-view-home {
+/* Bouton "Ajouter au panier" */
+.btn-primary {
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white !important;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 12px rgba(40, 167, 69, 0.3);
-}
-
-.btn-view-home:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
-    color: white !important;
-    text-decoration: none;
-}
-
-/* Variante pour les promos */
-.btn-view-promo {
-    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
     color: white !important;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -77,20 +55,169 @@
     text-decoration: none;
     display: inline-block;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    position: relative;
+    overflow: hidden;
 }
 
-.btn-view-promo:hover {
+.btn-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
     color: white !important;
     text-decoration: none;
 }
 
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+/* Bouton outline */
+.btn-outline-primary {
+    background: transparent;
+    color: #007bff !important;
+    border: 2px solid #007bff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: #007bff;
+    color: white !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+    text-decoration: none;
+}
+
+.btn-outline-primary:active {
+    transform: translateY(-1px);
+}
+
+/* Bouton favoris amélioré */
+.btn-favorite {
+    background: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-favorite:hover {
+    color: #ff6b6b;
+    transform: scale(1.2);
+    text-shadow: 0 2px 8px rgba(255, 107, 107, 0.6);
+}
+
+.btn-favorite.active {
+    color: #ff6b6b;
+    animation: heartbeat 0.6s ease-in-out;
+    text-shadow: 0 2px 8px rgba(255, 107, 107, 0.8);
+}
+
+/* Variantes du bouton favoris */
+
+/* Style avec fond subtil */
+.btn-favorite.bg-style {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-favorite.bg-style:hover {
+    background: rgba(255, 107, 107, 0.2);
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+/* Style avec ombre portée */
+.btn-favorite.shadow-style {
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.btn-favorite.shadow-style:hover {
+    text-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+    filter: drop-shadow(0 4px 8px rgba(255, 107, 107, 0.4));
+}
+
+/* Style avec bordure */
+.btn-favorite.border-style {
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-favorite.border-style:hover {
+    border-color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+/* Style minimaliste */
+.btn-favorite.minimal-style {
+    color: rgba(0, 0, 0, 0.6);
+    text-shadow: none;
+    font-size: 1.1rem;
+}
+
+.btn-favorite.minimal-style:hover {
+    color: #ff6b6b;
+    text-shadow: 0 1px 3px rgba(255, 107, 107, 0.3);
+}
+
+/* Style avec effet de glow */
+.btn-favorite.glow-style {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.btn-favorite.glow-style:hover {
+    color: #ff6b6b;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.8);
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+}
+
+/* Badges */
+.badge-sale {
+    background: #dc3545;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-new {
+    background: #28a745;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* Animation d'apparition */
 .btn-view-product,
-.btn-view-home,
-.btn-view-promo {
+.btn-primary,
+.btn-outline-primary {
     animation: fadeInUp 0.6s ease-out;
 }
 
@@ -108,21 +235,24 @@
 /* Responsive */
 @media (max-width: 768px) {
     .btn-view-product,
-    .btn-view-promo {
+    .btn-primary,
+    .btn-outline-primary {
         padding: 0.6rem 1.2rem;
         font-size: 0.85rem;
     }
     
-    .btn-view-home {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
+    .btn-favorite {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
     }
 }
 
 /* Effet de focus pour l'accessibilité */
 .btn-view-product:focus,
-.btn-view-home:focus,
-.btn-view-promo:focus {
+.btn-primary:focus,
+.btn-outline-primary:focus,
+.btn-favorite:focus {
     outline: 2px solid #007bff;
     outline-offset: 2px;
 }

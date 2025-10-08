@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Rediriger selon le rôle
                 if ($user['role'] === 'admin') {
-                    header('Location: ../admin_dashboard.php');
+                    header('Location: ../admin_dashboard_modern.php');
                 } else {
                     // Rediriger vers la page demandée ou l'accueil
                     if (isset($_SESSION['redirect_after_login'])) {

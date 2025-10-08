@@ -23,9 +23,7 @@ require_once 'backend/db.php';
             <div id="products-container" class="products-grid"></div>
         </section>
     </main>
-    <footer>
-        <p>&copy; 2024 MaBoutique. Tous droits réservés.</p>
-    </footer>
+    <?php include 'footer.php'; ?>
     <script src="script.js"></script>
     <script src="cart-manager.js"></script>
     <script>
@@ -76,30 +74,70 @@ require_once 'backend/db.php';
             }, 3000);
         }
         
-        // Charger les produits dynamiquement
+        // Charger les produits
         fetch('backend/products.php')
         .then(res => res.json())
         .then(products => {
             const container = document.getElementById('products-container');
-            if (products.length === 0) {
-                container.innerHTML = '<p>Aucun produit disponible.</p>';
+            if (!products.length) {
+                container.innerHTML = '<div class="text-center text-muted">Aucun produit à afficher.</div>';
                 return;
             }
+            
             container.innerHTML = products.map(prod => `
                 <div class="product-card">
-                    <img src="${prod.image || 'https://via.placeholder.com/200x200?text=Produit'}" alt="${prod.name}">
-                    <h2>${prod.name}</h2>
-                    <p class="category">${prod.category || ''}</p>
-                    <p class="price">${prod.price} €</p>
-                                                <div class="d-flex gap-2 justify-content-center">
-                                                    <a href="product_detail.php?id=${prod.id}" class="btn-view-product">👁️ Voir</a>
-                                                    <button onclick="addToCartFromList(${prod.id}, 1)" class="btn btn-success btn-sm">
-                                                        <i class="bi bi-cart-plus"></i> Ajouter
-                                                    </button>
-                                                </div>
+                    <div class="product-image">
+                        <img src="${prod.image || 'https://via.placeholder.com/200x200?text=Produit'}" alt="${prod.name}">
+                        <button class="btn-favorite" onclick="toggleFavorite(${prod.id})" id="fav-${prod.id}">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                        ${prod.promo_price && parseFloat(prod.promo_price) < parseFloat(prod.price) ? '<span class="badge badge-sale">PROMO</span>' : ''}
+                    </div>
+                    <div class="product-info">
+                        <h3>${prod.name}</h3>
+                        <p class="product-category">${prod.category || ''}</p>
+                        <div class="product-price">
+                            ${prod.promo_price && parseFloat(prod.promo_price) < parseFloat(prod.price) ? 
+                                `<span class="price-old">${prod.price} €</span> <span class="price-new">${prod.promo_price} €</span>` : 
+                                `<span class="price">${prod.price} €</span>`
+                            }
+                        </div>
+                        <div class="product-actions">
+                            <a href="product_detail.php?id=${prod.id}" class="btn btn-outline-primary">Voir</a>
+                            <button onclick="addToCartFromList(${prod.id}, 1)" class="btn btn-primary">Ajouter au panier</button>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         });
+        
+        // Fonction pour basculer les favoris
+        async function toggleFavorite(productId) {
+            const button = document.getElementById(`fav-${productId}`);
+            const isActive = button.classList.contains('active');
+            
+            try {
+                const response = await fetch('backend/favorites_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: isActive ? 'remove' : 'add',
+                        product_id: productId
+                    })
+                });
+                
+                if (response.ok) {
+                    button.classList.toggle('active');
+                    const message = isActive ? 'Retiré des favoris' : 'Ajouté aux favoris';
+                    showQuickNotification(message, 'success');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showQuickNotification('Erreur lors de la mise à jour des favoris', 'error');
+            }
+        }
     </script>
 </body>
-</html> 
+</html>
