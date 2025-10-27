@@ -293,6 +293,121 @@ header {
     color: var(--primary-color);
 }
 
+/* Styles magnifiques pour les icônes modernes */
+.modern-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+    color: var(--dark-blue);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.modern-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(52, 152, 219, 0.2));
+    transition: left 0.5s ease;
+    z-index: 0;
+}
+
+.modern-icon i {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.modern-icon .icon-tooltip {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    background: var(--dark-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.modern-icon .icon-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background: var(--dark-color);
+}
+
+.modern-icon:hover {
+    transform: translateY(-3px) scale(1.05);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #c0392b 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+    border-color: var(--primary-color);
+}
+
+.modern-icon:hover::before {
+    left: 0;
+}
+
+.modern-icon:hover i {
+    transform: scale(1.2) rotate(5deg);
+}
+
+.modern-icon:hover .icon-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    bottom: -35px;
+}
+
+/* Animation d'apparition */
+@keyframes iconFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modern-icon {
+    animation: iconFadeIn 0.5s ease-out;
+}
+
+.modern-icon:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+/* États pour différentes icônes */
+.icon-user:hover i {
+    transform: scale(1.2) translateY(-2px);
+}
+
+.icon-register:hover i {
+    transform: scale(1.2) rotate(-5deg);
+}
+
 /* Menu profil utilisateur */
 .user-profile-dropdown {
     position: relative;
@@ -322,7 +437,15 @@ header {
 }
 
 .profile-icon {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.profile-toggle:hover .profile-icon {
+    transform: scale(1.2) rotate(5deg);
 }
 
 .profile-name {
@@ -371,8 +494,28 @@ header {
 }
 
 .profile-avatar {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+    animation: avatarPulse 2s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.profile-header:hover .profile-avatar {
+    transform: scale(1.1) rotate(5deg);
+    color: var(--secondary-color);
 }
 
 .profile-username {

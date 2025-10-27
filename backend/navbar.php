@@ -65,7 +65,10 @@ document.addEventListener('click', (e) => {
 }
 
 // Si la base de données est incluse, utiliser la navbar complète
-require_once 'auth_check.php';
+// Inclure auth_check.php seulement si les fonctions ne sont pas déjà définies
+if (!function_exists('isLoggedIn')) {
+    require_once 'auth_check.php';
+}
 ?>
 <nav class="navbar navbar-expand-lg bg-white">
     <div class="container-fluid">
@@ -147,4 +150,4 @@ require_once 'auth_check.php';
             <?php endif; ?>
         </div>
     </div>
-</nav> 
+</nav>

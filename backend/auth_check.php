@@ -1,19 +1,26 @@
 <?php
-// Démarrer la session seulement si elle n'est pas déjà active
-if (session_status() === PHP_SESSION_NONE) {
+// Démarrer la session seulement si elle n'est pas déjà active et si les headers ne sont pas encore envoyés
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     session_start();
 }
 
 // Fonction pour vérifier si l'utilisateur est connecté
 function isLoggedIn() {
-    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+    return session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
 
 // Fonction pour rediriger vers la page de connexion si non connecté
 function requireLogin() {
     if (!isLoggedIn()) {
+        // Démarrer la session si possible pour stocker l'URL de redirection
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            session_start();
+        }
+        
         // Stocker l'URL actuelle pour rediriger après connexion
-        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        }
         
         // Rediriger vers la page de connexion (chemin absolu)
         header('Location: /shop/login.php');
@@ -42,11 +49,16 @@ function getCurrentUser() {
 
 // Fonction pour déconnecter l'utilisateur
 function logout() {
-    // Détruire toutes les variables de session
-    $_SESSION = array();
+    // Démarrer la session si elle n'est pas active
+    if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+        session_start();
+    }
     
-    // Détruire la session
-    session_destroy();
+    // Détruire toutes les variables de session
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        $_SESSION = array();
+        session_destroy();
+    }
     
     // Rediriger vers la page d'accueil
     header('Location: ../index.php');
